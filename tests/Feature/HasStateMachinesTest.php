@@ -23,6 +23,16 @@ class HasStateMachinesTest extends TestCase
     use WithFaker;
 
     /** @test */
+    public function can_boot_state_machine_models_without_recursive_booting_errors()
+    {
+        $salesOrder = new SalesOrder();
+
+        $this->assertInstanceOf(SalesOrder::class, $salesOrder);
+        $this->assertEquals(StatusStateMachine::class, $salesOrder->stateMachines['status']);
+        $this->assertEquals(FulfillmentStateMachine::class, $salesOrder->stateMachines['fulfillment']);
+    }
+
+    /** @test */
     public function can_configure_state_machines()
     {
         //Act
@@ -41,6 +51,8 @@ class HasStateMachinesTest extends TestCase
     public function should_set_default_state_for_field()
     {
         //Arrange
+        $salesOrder = new SalesOrder();
+
         $statusStateMachine = new StatusStateMachine('status', $salesOrder);
 
         $fulfillmentStateMachine = new FulfillmentStateMachine('fulfillment', $salesOrder);
